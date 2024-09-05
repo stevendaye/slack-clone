@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { TriangleAlert } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -21,12 +22,35 @@ interface SignInCardProps {
 }
 
 export const SignInCard: React.FC<SignInCardProps> = ({ setAuth }) => {
-  const [state, setState] = useState({ email: "", password: "" });
-  const [visible, setVisible] = useState<boolean>(false);
   const { signIn } = useAuthActions();
 
-  const handleProvider = (value: "google" | "github") => {
-    signIn(value);
+  const [state, setState] = useState({ email: "", password: "" });
+  const [visible, setVisible] = useState<boolean>(false);
+  const [pending, setPending] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
+  const handleProviders = (value: "google" | "github") => {
+    setPending(true);
+    signIn(value).finally(() => {
+      setPending(false);
+    });
+  };
+
+  const onPasswordCredentials = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setPending(true);
+    signIn("password", {
+      email: state.email,
+      password: state.password,
+      flow: "signIn",
+    })
+      .catch(() => {
+        setError("Invalid email or password");
+      })
+      .finally(() => {
+        setPending(false);
+      });
   };
 
   return (
@@ -38,15 +62,22 @@ export const SignInCard: React.FC<SignInCardProps> = ({ setAuth }) => {
         </CardDescription>
       </CardHeader>
 
+      {!!error && (
+        <div className="flex items-center bg-destructive/15 p-3 rounded-md gap-x-2 text-sm text-destructive mb-6">
+          <TriangleAlert className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
+
       <CardContent className="space-y-5 px-0 pb-0">
-        <form className="space-y-2.5">
+        <form className="space-y-2.5" onSubmit={onPasswordCredentials}>
           <div className="flex flex-col relative">
             <Input
               value={state.email}
-              disabled={false}
+              disabled={pending}
               placeholder="Email"
               type="email"
-              className=""
+              className="w-full"
               onChange={(e) => setState({ ...state, email: e.target.value })}
               required
             />
@@ -55,10 +86,10 @@ export const SignInCard: React.FC<SignInCardProps> = ({ setAuth }) => {
           <div className="flex flex-col relative">
             <Input
               value={state.password}
-              disabled={false}
+              disabled={pending}
               placeholder="Password"
               type={`${visible ? "text" : "password"}`}
-              className=""
+              className="w-full"
               onChange={(e) => setState({ ...state, password: e.target.value })}
               required
             />
@@ -76,7 +107,12 @@ export const SignInCard: React.FC<SignInCardProps> = ({ setAuth }) => {
             )}
           </div>
 
-          <Button type="submit" className="w-full" size={"lg"} disabled={false}>
+          <Button
+            type="submit"
+            className="w-full"
+            size={"lg"}
+            disabled={pending}
+          >
             Conitnue
           </Button>
         </form>
@@ -86,8 +122,8 @@ export const SignInCard: React.FC<SignInCardProps> = ({ setAuth }) => {
         <div className="flex flex-col gap-y-2.5">
           <Button
             className="w-full relative"
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => void handleProviders("google")}
             variant={"outline"}
             size={"lg"}
           >
@@ -97,8 +133,8 @@ export const SignInCard: React.FC<SignInCardProps> = ({ setAuth }) => {
 
           <Button
             className="w-full relative"
-            disabled={false}
-            onClick={() => void handleProvider("github")}
+            disabled={pending}
+            onClick={() => void handleProviders("github")}
             variant={"outline"}
             size={"lg"}
           >

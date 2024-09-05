@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { TriangleAlert } from "lucide-react";
 import { signInFlow } from "./types";
 import {
   Card,
@@ -20,13 +22,49 @@ interface SignUpCardProps {
 }
 
 export const SignUpCard: React.FC<SignUpCardProps> = ({ setAuth }) => {
+  const { signIn } = useAuthActions();
+
   const [state, setState] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
   const [visible, setVisible] = useState<boolean>(false);
   const [visibleConfirm, setVisibleConfirm] = useState<boolean>(false);
+  const [pending, setPending] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
+  const handleProviders = (value: "github" | "google") => {
+    setPending(true);
+    signIn(value).finally(() => {
+      setPending(false);
+    });
+  };
+
+  const onPasswordCredentials = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (state.password !== state.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setPending(true);
+    signIn("password", {
+      name: `${state.firstName} ${state.lastName}`,
+      email: state.email,
+      password: state.password,
+      flow: "signUp",
+    })
+      .catch(() => {
+        setError("Something went wrong. Please try again later");
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
 
   return (
     <Card className="w-full h-full p-8">
@@ -37,15 +75,48 @@ export const SignUpCard: React.FC<SignUpCardProps> = ({ setAuth }) => {
         </CardDescription>
       </CardHeader>
 
+      {!!error && (
+        <div className="flex items-center bg-destructive/15 p-3 rounded-md gap-x-2 text-sm text-destructive mb-6">
+          <TriangleAlert className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
+
       <CardContent className="space-y-5 px-0 pb-0">
-        <form className="space-y-2.5">
+        <form className="space-y-2.5" onSubmit={onPasswordCredentials}>
+          <div className="flex items-center justify-center gap-2">
+            <Input
+              value={state.firstName}
+              disabled={pending}
+              placeholder="First Name"
+              type="text"
+              autoComplete="off"
+              className="w-full"
+              onChange={(e) =>
+                setState({ ...state, firstName: e.target.value })
+              }
+              required
+            />
+            <Input
+              value={state.lastName}
+              disabled={pending}
+              placeholder="Last Name"
+              type="text"
+              autoComplete="off"
+              className="w-full"
+              onChange={(e) => setState({ ...state, lastName: e.target.value })}
+              required
+            />
+          </div>
+
           <div className="flex flex-col relative">
             <Input
               value={state.email}
-              disabled={false}
+              disabled={pending}
               placeholder="Email"
               type="email"
-              className=""
+              autoComplete="off"
+              className="w-full"
               onChange={(e) => setState({ ...state, email: e.target.value })}
               required
             />
@@ -54,10 +125,10 @@ export const SignUpCard: React.FC<SignUpCardProps> = ({ setAuth }) => {
           <div className="flex flex-col relative">
             <Input
               value={state.password}
-              disabled={false}
+              disabled={pending}
               placeholder="Password"
               type={`${visible ? "text" : "password"}`}
-              className=""
+              className="w-full"
               onChange={(e) => setState({ ...state, password: e.target.value })}
               required
             />
@@ -78,10 +149,10 @@ export const SignUpCard: React.FC<SignUpCardProps> = ({ setAuth }) => {
           <div className="flex flex-col relative">
             <Input
               value={state.confirmPassword}
-              disabled={false}
+              disabled={pending}
               placeholder="Confirm Password"
               type={`${visibleConfirm ? "text" : "password"}`}
-              className=""
+              className="w-full"
               onChange={(e) =>
                 setState({ ...state, confirmPassword: e.target.value })
               }
@@ -111,8 +182,8 @@ export const SignUpCard: React.FC<SignUpCardProps> = ({ setAuth }) => {
         <div className="flex flex-col gap-y-2.5">
           <Button
             className="w-full relative"
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => void handleProviders("google")}
             variant={"outline"}
             size={"lg"}
           >
@@ -122,8 +193,8 @@ export const SignUpCard: React.FC<SignUpCardProps> = ({ setAuth }) => {
 
           <Button
             className="w-full relative"
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => void handleProviders("github")}
             variant={"outline"}
             size={"lg"}
           >

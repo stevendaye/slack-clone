@@ -1,5 +1,5 @@
 "use client";
-import { AuthScreen } from "@/auth/auth-screen";
+import { AuthScreen } from "@/components/auth/auth-screen";
 import React from "react";
 
 const AuthPage = () => {

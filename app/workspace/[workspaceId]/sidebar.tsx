@@ -1,4 +1,4 @@
-import { UserButton } from "@/auth/user-button";
+import { UserButton } from "@/components/auth/user-button";
 import React from "react";
 import { WorkspaceSwitcher } from "./workspace-switcher";
 import { SidebarButton } from "./sidebar-button";

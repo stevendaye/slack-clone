@@ -2,7 +2,7 @@
 
 🔗 Production Link URL: Coming Soon 😉
 
-This is a lighweight version of Slack App. This clone covers the core fundamental features of Slack and what it was designed for: **Communication Tool**.
+This is a lighweight or minimalistic version of Slack App. This clone covers the core fundamental features of Slack and what it was designed for: **Productivity Tool**.
 
 ## Status: In Progress
 

@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
-import { useCurrentUser } from "@/auth/api/use-current-user";
+} from "../ui/dropdown-menu";
+import { useCurrentUser } from "@/components/auth/api/use-current-user";
 import { Loader, LogOut } from "lucide-react";
 import { useAuthActions } from "@convex-dev/auth/react";
 
@@ -26,8 +26,12 @@ export const UserButton: React.FC = () => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="outline-none relative">
-        <Avatar className="w-6 hover:opacity-75 transition">
-          <AvatarImage alt={name} src={image} />
+        <Avatar className="hover:opacity-75 transition">
+          <AvatarImage
+            alt={name}
+            src={image}
+            className="w-full h-full object-cover"
+          />
           <AvatarFallback className="bg-orange-400 text-white">
             {avatarFallback}
           </AvatarFallback>

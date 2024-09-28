@@ -26,13 +26,13 @@ export const UserButton: React.FC = () => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="outline-none relative">
-        <Avatar className="hover:opacity-75 transition">
+        <Avatar className="rounded-md hover:opacity-75 transition">
           <AvatarImage
             alt={name}
             src={image}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-md"
           />
-          <AvatarFallback className="bg-orange-400 text-white">
+          <AvatarFallback className="rounded-md bg-orange-400 text-white">
             {avatarFallback}
           </AvatarFallback>
         </Avatar>

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { CreateWorkspaceModal } from "@/components/modals/create-workspace-modal";
+import { CreateChannelModel } from "./create-channel-modal";
 
 export const Modals: React.FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -14,5 +15,10 @@ export const Modals: React.FC = () => {
 
   if (!mounted) return null;
 
-  return <CreateWorkspaceModal />;
+  return (
+    <>
+      <CreateWorkspaceModal />
+      <CreateChannelModel />
+    </>
+  );
 };

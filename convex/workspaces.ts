@@ -1,15 +1,16 @@
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 const generateCode = () => {
   const code = Array.from(
     { length: 7 },
     () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]
-  ).join();
+  ).join("");
   return code;
 };
 
+/* Create a workspace */
 export const create = mutation({
   args: {
     name: v.string(),
@@ -28,16 +29,49 @@ export const create = mutation({
       joinCode,
     });
 
+    // Insert into members created workspace with the "admin" role
     await ctx.db.insert("members", {
       userId,
       workspaceId,
       role: "admin",
     });
 
+    await ctx.db.insert("channels", {
+      name: "General",
+      workspaceId,
+    });
+
     return workspaceId;
   },
 });
 
+/* Generate new Join Code */
+export const newJoinCode = mutation({
+  args: { workspaceId: v.id("workspaces") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) throw new Error("You are not authorized");
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member || member.role !== "admin")
+      throw new Error("You are not authorized");
+
+    const joinCode = generateCode();
+
+    await ctx.db.patch(args.workspaceId, { joinCode });
+
+    return args.workspaceId;
+  },
+});
+
+/* Get all workspaces created by the logged in user */
 export const get = query({
   args: {},
   handler: async (ctx) => {
@@ -66,7 +100,56 @@ export const get = query({
   },
 });
 
+/* Get a single workspace */
 export const getById = query({
+  args: { id: v.id("workspaces") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) throw new Error("You are not authorized");
+
+    // Making sure that he is a member of the workspace displayed
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.id).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member) return null;
+
+    return ctx.db.get(args.id);
+  },
+});
+
+/* Update workspace name */
+export const update = mutation({
+  args: { id: v.id("workspaces"), name: v.string() },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) throw new Error("You are not authorized");
+
+    // Making sure that he is a member of the current workspace
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.id).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member || member.role !== "admin") {
+      throw new Error("You are not a member");
+    }
+
+    await ctx.db.patch(args.id, { name: args.name });
+
+    return args.id;
+  },
+});
+
+/* Delete workspace */
+export const remove = mutation({
   args: { id: v.id("workspaces") },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -80,8 +163,24 @@ export const getById = query({
       )
       .unique();
 
-    if (!member) return null;
+    if (!member || member.role !== "admin") {
+      throw new Error("You are not a member");
+    }
 
-    return ctx.db.get(args.id);
+    // Remove all dangling users/members from that workspace
+    const [members] = await Promise.all([
+      ctx.db
+        .query("members")
+        .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+        .collect(),
+    ]);
+
+    for (const member of members) {
+      await ctx.db.delete(member._id);
+    }
+
+    await ctx.db.delete(args.id);
+
+    return args.id;
   },
 });

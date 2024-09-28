@@ -5,22 +5,21 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 import { Loader, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useGetWorkspace } from "@/worskapaces/api/use-get-workspace";
-import { useGetWorkspaces } from "@/worskapaces/api/use-get-workspaces";
-import { useCreateWorkspaceModal } from "@/worskapaces/store/use-create-workspace-modal";
+import { useGetWorkspace } from "@/api/workspaces/use-get-workspace";
+import { useGetWorkspaces } from "@/api/workspaces/use-get-workspaces";
+import { useCreateWorkspaceModal } from "@/store/use-create-workspace-modal";
 import { useRouter } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 
 export const WorkspaceSwitcher: React.FC = () => {
   const [_open, setOpen] = useCreateWorkspaceModal();
   const workspaceId = useWorkspaceId();
-  const { data: workspaces, isLoading: isLoadingWorkspaces } =
+  const { data: workspaces, isLoading: _isLoadingWorkspaces } =
     useGetWorkspaces();
   const { data: workspace, isLoading: isLoadingWorkspace } = useGetWorkspace({
     id: workspaceId,

@@ -2,8 +2,8 @@
 import { useEffect, useMemo } from "react";
 
 import { UserButton } from "@/components/auth/user-button";
-import { useGetWorkspaces } from "@/worskapaces/api/use-get-workspaces";
-import { useCreateWorkspaceModal } from "@/worskapaces/store/use-create-workspace-modal";
+import { useGetWorkspaces } from "@/api/workspaces/use-get-workspaces";
+import { useCreateWorkspaceModal } from "@/api/store/use-create-workspace-modal";
 import { useRouter } from "next/navigation";
 
 export default function Home() {

@@ -4,7 +4,7 @@ import { useMutation } from "convex/react";
 import { useCallback, useMemo, useState } from "react";
 
 type RequestType = {
-  name: string;
+  id: Id<"workspaces">;
 };
 type ResponseType = Id<"workspaces">;
 
@@ -15,7 +15,7 @@ type Options = {
   throwError?: boolean;
 };
 
-export const useCreateWorkspace = () => {
+export const useRemoveWorkspace = () => {
   const [data, setData] = useState<ResponseType | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [status, setStatus] = useState<
@@ -27,7 +27,7 @@ export const useCreateWorkspace = () => {
   const isError = useMemo(() => status === "error", [status]);
   const isSettled = useMemo(() => status === "settled", [status]);
 
-  const mutation = useMutation(api.workspaces.create);
+  const mutation = useMutation(api.workspaces.remove);
 
   const mutate = useCallback(
     async (values: RequestType, options?: Options) => {
@@ -40,6 +40,7 @@ export const useCreateWorkspace = () => {
         options?.onSuccess?.(res);
         return res;
       } catch (error) {
+        setStatus("error");
         options?.onError?.(error as Error);
         if (options?.throwError) throw error;
       } finally {

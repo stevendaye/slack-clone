@@ -10,10 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useCreateWorkspace } from "@/worskapaces/api/use-create-workspace";
-import { useCreateWorkspaceModal } from "@/worskapaces/store/use-create-workspace-modal";
+import { useCreateWorkspace } from "@/api/workspaces/use-create-workspace";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useCreateWorkspaceModal } from "@/store/use-create-workspace-modal";
 
 export const CreateWorkspaceModal: React.FC = () => {
   const [name, setName] = useState<string>("");

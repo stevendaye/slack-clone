@@ -4,7 +4,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 
 const generateCode = () => {
   const code = Array.from(
-    { length: 7 },
+    { length: 6 },
     () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]
   ).join("");
   return code;
@@ -42,6 +42,42 @@ export const create = mutation({
     });
 
     return workspaceId;
+  },
+});
+
+/* Member joins a workspace */
+export const join = mutation({
+  args: { joinCode: v.string(), workspaceId: v.id("workspaces") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) throw new Error("You are not authorized");
+
+    const workspace = await ctx.db.get(args.workspaceId);
+
+    if (!workspace) throw new Error("Workspace not found");
+
+    if (workspace.joinCode !== args.joinCode.toLowerCase())
+      throw new Error("Invalid Join Code");
+
+    /* Check if member requesting to join exists */
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (member)
+      throw new Error("You are already an active member of this workspace");
+
+    await ctx.db.insert("members", {
+      userId,
+      workspaceId: workspace._id,
+      role: "member",
+    });
+
+    return workspace._id;
   },
 });
 
@@ -97,6 +133,30 @@ export const get = query({
     }
 
     return workspaces;
+  },
+});
+
+/* Get basic information of workspace for the public */
+export const getByIdPublic = query({
+  args: { id: v.id("workspaces") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) return null;
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.id).eq("userId", userId)
+      )
+      .unique();
+
+    const workspace = await ctx.db.get(args.id);
+
+    return {
+      name: workspace?.name,
+      isMember: !!member,
+    };
   },
 });
 

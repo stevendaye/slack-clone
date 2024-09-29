@@ -3,8 +3,8 @@ import { useEffect, useMemo } from "react";
 
 import { UserButton } from "@/components/auth/user-button";
 import { useGetWorkspaces } from "@/api/workspaces/use-get-workspaces";
-import { useCreateWorkspaceModal } from "@/api/store/use-create-workspace-modal";
 import { useRouter } from "next/navigation";
+import { useCreateWorkspaceModal } from "@/store/use-create-workspace-modal";
 
 export default function Home() {
   const [open, setOpen] = useCreateWorkspaceModal();

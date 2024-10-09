@@ -37,7 +37,7 @@ export const create = mutation({
     });
 
     await ctx.db.insert("channels", {
-      name: "General",
+      name: "general",
       workspaceId,
     });
 
@@ -166,7 +166,7 @@ export const getById = query({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
 
-    if (!userId) throw new Error("You are not authorized");
+    if (!userId) return;
 
     // Making sure that he is a member of the workspace displayed
     const member = await ctx.db

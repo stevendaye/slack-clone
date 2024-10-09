@@ -19,9 +19,9 @@ import { Id } from "@/convex/_generated/dataModel";
 export const WorkspaceSwitcher: React.FC = () => {
   const [_open, setOpen] = useCreateWorkspaceModal();
   const workspaceId = useWorkspaceId();
-  const { data: workspaces, isLoading: _isLoadingWorkspaces } =
+  const { data: workspaces, isLoading: _loadingWorkspaces } =
     useGetWorkspaces();
-  const { data: workspace, isLoading: isLoadingWorkspace } = useGetWorkspace({
+  const { data: workspace, isLoading: loadingWorkspace } = useGetWorkspace({
     id: workspaceId,
   });
 
@@ -39,7 +39,7 @@ export const WorkspaceSwitcher: React.FC = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="size-9 relative overflow-hidden bg-[#ABABAD] hover:bg-[#ABABAD]/80 text-slate-800 font-semibold text-xl">
-          {isLoadingWorkspace ? (
+          {loadingWorkspace ? (
             <Loader className="size-4 animate-spin shrink-0" />
           ) : (
             workspace?.name.charAt(0).toUpperCase()

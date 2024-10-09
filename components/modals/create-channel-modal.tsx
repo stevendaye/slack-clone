@@ -12,11 +12,14 @@ import { useCreateChannelModal } from "@/store/use-create-channel-modal";
 import { useCreateChannel } from "@/api/channels/use-create-channel";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { Id } from "@/convex/_generated/dataModel";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const CreateChannelModel = () => {
   const [name, setName] = useState<string>("");
   const [open, setOpen] = useCreateChannelModal();
 
+  const router = useRouter();
   const workspaceId = useWorkspaceId();
 
   const { mutate, isPending } = useCreateChannel();
@@ -38,7 +41,12 @@ export const CreateChannelModel = () => {
       { name, workspaceId },
       {
         onSuccess: (id: Id<"channels">) => {
+          toast.success("Channed created successfully");
           handleClose();
+          router.push(`/workspace/${workspaceId}/channel/${id}`);
+        },
+        onError: () => {
+          toast.error("Failed to create channel");
         },
       }
     );

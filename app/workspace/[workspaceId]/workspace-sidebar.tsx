@@ -1,6 +1,3 @@
-import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useCurrentMember } from "@/api/members/use-current-member";
-import { useGetWorkspace } from "@/api/workspaces/use-get-workspace";
 import {
   AlertTriangle,
   HashIcon,
@@ -9,6 +6,11 @@ import {
   SendHorizonal,
 } from "lucide-react";
 import React from "react";
+
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
+import { useCurrentMember } from "@/api/members/use-current-member";
+import { useGetWorkspace } from "@/api/workspaces/use-get-workspace";
+import { useChannelId } from "@/hooks/use-channel-id";
 
 import { WorkspaceHeader } from "./workspace-header";
 import { SidebarItem } from "./sidebar-item";
@@ -20,23 +22,24 @@ import { useCreateChannelModal } from "@/store/use-create-channel-modal";
 
 export const WorkspaceSidebar: React.FC = () => {
   const workspaceId = useWorkspaceId();
+  const channelId = useChannelId();
 
-  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
+  const { data: workspace, isLoading: loadingWorkspace } = useGetWorkspace({
     id: workspaceId,
   });
-  const { data: member, isLoading: memberLoading } = useCurrentMember({
+  const { data: member, isLoading: loadingMember } = useCurrentMember({
     workspaceId,
   });
-  const { data: channels, isLoading: _channelsLaoding } = useGetChannels({
+  const { data: channels, isLoading: _laodingChannels } = useGetChannels({
     workspaceId,
   });
-  const { data: members, isLoading: _membersLaoding } = useGetMembers({
+  const { data: members, isLoading: _laodingMembers } = useGetMembers({
     workspaceId,
   });
 
   const [_open, setOpen] = useCreateChannelModal();
 
-  if (workspaceLoading || memberLoading) {
+  if (loadingWorkspace || loadingMember) {
     return (
       <div className="flex flex-col items-center justify-center h-full bg-main">
         <Loader className="size-5 animate-spin text-white" />
@@ -82,6 +85,7 @@ export const WorkspaceSidebar: React.FC = () => {
             label={item.name}
             icon={HashIcon}
             id={item._id}
+            variant={channelId === item._id ? "active" : "default"}
           />
         ))}
       </WorkspaceSection>

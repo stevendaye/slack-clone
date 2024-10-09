@@ -2,7 +2,7 @@
 
 🔗 Production Link URL: Coming Soon 😉
 
-This is a lighweight or minimalistic version of Slack App. This clone covers the core fundamental features of Slack and what it was designed for: **Productivity Tool**.
+This is a lighweight version of Slack App. This clone covers the core fundamental features of Slack and what it was designed for: **Productivity Tool**.
 
 ## Status: In Progress
 
@@ -10,9 +10,20 @@ This is a lighweight or minimalistic version of Slack App. This clone covers the
 
 ### Technologies
 
-- Next.js
-- Convex (Backend 🪛)
+- Next.js 14
+- Convex Realtime Backend
 - TypeScript
 - TailwindCSS
+- Schadcn UI
 
 ### Features Covered
+
+- Register / Login
+- Create / View a workspace
+- Create / View a channel
+- Invite a member
+- Join a workspace
+- Send one-on-one messages
+- Broadcast messages into channles
+- Send files & Media
+- Add Emoji reaction to messages

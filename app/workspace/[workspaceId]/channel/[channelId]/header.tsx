@@ -30,11 +30,13 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ title }) => {
   const router = useRouter();
+
   const [name, setName] = useState<string>(title);
   const [editOpen, setEditOpen] = useState<boolean>(false);
 
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
+
   const [ConfirmDialog, confirm] = useConfirm(
     "Delete channel",
     "Are you sure you want to permanently delete this channel?"
@@ -44,6 +46,7 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
 
   const { mutate: updateChannel, isPending: updatingChannel } =
     useUpdateChannel();
+
   const { mutate: removeChannel, isPending: removingChannel } =
     useRemoveChannel();
 

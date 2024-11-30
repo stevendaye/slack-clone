@@ -1,8 +1,53 @@
 import { v } from "convex/values";
-import { mutation, QueryCtx } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
+import { mutation, query, QueryCtx } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { Id } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 
+/* Load all messages having reply to a particular meesage */
+const populateThreads = async (ctx: QueryCtx, messageId: Id<"messages">) => {
+  const messages = await ctx.db
+    .query("messages")
+    .withIndex("by_parent_message_id", (q) =>
+      q.eq("parentMessageId", messageId)
+    )
+    .collect();
+
+  if (messages.length === 0)
+    return { count: 0, image: undefined, timestamp: 0 };
+
+  const lastMessage = messages[messages.length - 1];
+  const lastMessageMember = await populateMember(ctx, lastMessage.memberId);
+
+  if (!lastMessageMember)
+    return {
+      count: 0,
+      image: undefined,
+      timestamp: 0,
+    };
+
+  const lastMessageUser = await populateUser(ctx, lastMessageMember.userId);
+
+  return {
+    count: messages.length,
+    image: lastMessageUser?.image,
+    timestamp: lastMessageUser?._creationTime,
+  };
+};
+
+/* Get all reactions added to a particular message */
+const populateReactions = (ctx: QueryCtx, messageId: Id<"messages">) =>
+  ctx.db
+    .query("reactions")
+    .withIndex("by_message_id", (q) => q.eq("messageId", messageId))
+    .collect();
+
+/* Get any user and member with the corresponding id */
+const populateUser = (ctx: QueryCtx, userId: Id<"users">) => ctx.db.get(userId);
+const populateMember = (ctx: QueryCtx, memberId: Id<"members">) =>
+  ctx.db.get(memberId);
+
+/* Get member in a specfic workspace */
 const getMember = (
   ctx: QueryCtx,
   workspaceId: Id<"workspaces">,
@@ -54,9 +99,154 @@ export const create = mutation({
       conversationId: _conversationId,
       parentMessageId: args.parentMessageId,
       memberId: member._id,
-      updatedAt: Date.now(),
     });
 
     return messageId;
+  },
+});
+
+export const update = mutation({
+  args: { id: v.id("messages"), body: v.string() },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) throw new Error("You are not authorized");
+
+    const message = await ctx.db.get(args.id);
+
+    if (!message) throw new Error("Message not found");
+
+    const member = await getMember(ctx, message.workspaceId, userId);
+
+    if (!member || member._id !== message.memberId)
+      throw new Error("You are not an authorized member");
+
+    await ctx.db.patch(args.id, {
+      body: args.body,
+      updatedAt: Date.now(),
+    });
+
+    return args.id;
+  },
+});
+
+export const remove = mutation({
+  args: { id: v.id("messages") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) throw new Error("You are not authorized");
+
+    const message = await ctx.db.get(args.id);
+
+    if (!message) throw new Error("Message not found");
+
+    const member = await getMember(ctx, message.workspaceId, userId);
+
+    if (!member || member._id !== message.memberId)
+      throw new Error("You are not an authorized member");
+
+    await ctx.db.delete(args.id);
+
+    return args.id;
+  },
+});
+
+export const get = query({
+  args: {
+    channelId: v.optional(v.id("channels")),
+    conversationId: v.optional(v.id("conversations")),
+    parentMessageId: v.optional(v.id("messages")),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) throw new Error("You are not authorized!");
+
+    let _conversationId = args.conversationId;
+
+    if (!args.conversationId && !args.channelId && args.parentMessageId) {
+      const parentMessage = await ctx.db.get(args.parentMessageId);
+
+      if (!parentMessage) throw new Error("Parent message does not exist");
+
+      _conversationId = args.conversationId;
+    }
+
+    const results = await ctx.db
+      .query("messages")
+      .withIndex("by_channel_id_parent_message_id_conversation_id", (q) =>
+        q
+          .eq("channelId", args.channelId)
+          .eq("parentMessageId", args.parentMessageId)
+          .eq("conversationId", args.conversationId)
+      )
+      .order("desc")
+      .paginate(args.paginationOpts);
+
+    return {
+      ...results,
+      page: (
+        await Promise.all(
+          results.page.map(async (message) => {
+            const member = await populateMember(ctx, message.memberId);
+            const user = member ? await populateUser(ctx, member.userId) : null;
+
+            if (!member || !user) return null;
+
+            const reactions = await populateReactions(ctx, message._id);
+            const threads = await populateThreads(ctx, message._id);
+            const image = message.image
+              ? await ctx.storage.getUrl(message.image)
+              : undefined;
+
+            const reactionsCount = reactions.map((reaction) => ({
+              ...reaction,
+              count: reactions.filter((r) => r.value === reaction.value).length,
+            }));
+
+            const dedupedReactions = reactionsCount.reduce(
+              (acc, reaction) => {
+                const existingReaction = acc.find(
+                  (r) => r.value === reaction.value
+                );
+
+                if (existingReaction) {
+                  existingReaction.memberIds = Array.from(
+                    new Set([...existingReaction.memberIds, reaction.memberId])
+                  );
+                } else {
+                  acc.push({ ...reaction, memberIds: [reaction.memberId] });
+                }
+
+                return acc;
+              },
+              [] as (Doc<"reactions"> & {
+                count: number;
+                memberIds: Id<"members">[];
+              })[]
+            );
+
+            const reactionsWithNoMemberId = dedupedReactions.map(
+              ({ memberId, ...rest }) => rest
+            );
+
+            return {
+              ...message,
+              image,
+              member,
+              user,
+              reactions: reactionsWithNoMemberId,
+              threadCount: threads.count,
+              threadImage: threads.image,
+              threadTimestamp: threads.timestamp,
+            };
+          })
+        )
+      ).filter(
+        (message): message is NonNullable<typeof message> => message != null
+      ),
+    };
   },
 });

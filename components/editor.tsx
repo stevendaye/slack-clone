@@ -86,21 +86,30 @@ const Editor = ({
           ["link"],
           [{ list: "ordered" }, { list: "bullet" }],
         ],
+        clipboard: {
+          matchVisual: false,
+        },
         keyboard: {
           bindings: {
             enter: {
               key: "Enter",
               handler: () => {
+                // Get text context from quill
                 const text = quill.getText();
                 const selectedImage =
                   imageElementRef.current?.files?.[0] || null;
+
+                // Check if the message is empty after triming
                 const hasEmptyMessage =
                   !selectedImage &&
                   text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
 
                 if (hasEmptyMessage) return;
 
-                const body = JSON.stringify(quill.getContents());
+                // Get quill contents
+                const contents = quill.getContents();
+                const body = JSON.stringify(contents);
+
                 submitRef.current?.({ body, image: selectedImage });
               },
             },

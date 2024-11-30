@@ -1,4 +1,5 @@
 "use client";
+
 import { AuthScreen } from "@/components/auth/auth-screen";
 import React from "react";
 

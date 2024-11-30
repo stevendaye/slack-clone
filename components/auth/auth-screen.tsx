@@ -20,7 +20,7 @@ export const AuthScreen = () => {
         </div>
 
         <p className="text-xs flex items-center justify-center w-full py-5 mt-auto text-white">
-          Cloned with ❤️ by Steven Audrey Daye 🇧🇯
+          Lightweight clone made with ❤️ by Steven Audrey Daye 🇧🇯
         </p>
       </div>
     </div>

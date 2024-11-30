@@ -11,7 +11,8 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Separator } from "@radix-ui/react-separator";
+import { Separator } from "../ui/separator";
+
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 

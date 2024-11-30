@@ -123,7 +123,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({ setAuth }) => {
           <Button
             className="w-full relative"
             disabled={pending}
-            onClick={() => void handleProviders("google")}
+            onClick={() => handleProviders("google")}
             variant={"outline"}
             size={"lg"}
           >
@@ -134,7 +134,7 @@ export const SignInCard: React.FC<SignInCardProps> = ({ setAuth }) => {
           <Button
             className="w-full relative"
             disabled={pending}
-            onClick={() => void handleProviders("github")}
+            onClick={() => handleProviders("github")}
             variant={"outline"}
             size={"lg"}
           >

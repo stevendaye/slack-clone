@@ -3,7 +3,7 @@ import { GetMessagesReturnType } from "@/api/messages/use-get-messages";
 import { Loader } from "lucide-react";
 
 import { Message } from "./message";
-import { ChannelHero } from "./ChannelHero";
+import { ChannelHero } from "./channel-hero";
 import { useState } from "react";
 import { Id } from "@/convex/_generated/dataModel";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
@@ -109,6 +109,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         </div>
       ))}
 
+      {/* Infinite scrolling to the top */}
       <div
         className="h-1"
         ref={(el) => {

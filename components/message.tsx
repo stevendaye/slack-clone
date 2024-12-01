@@ -14,6 +14,7 @@ import { useRemoveMessage } from "@/api/messages/use-remove-message";
 
 import { useConfirm } from "@/hooks/use-confirm";
 import { Reactions } from "./reactions";
+import { usePanel } from "@/hooks/use-panel";
 
 const MessageRenderer = dynamic(() => import("@/components/message-renderer"), {
   ssr: false,
@@ -74,6 +75,8 @@ export const Message: React.FC<MessageProps> = ({
     "Are you sure you wamt to delete this message"
   );
 
+  const { parentMessageId, onOpenMessage, onCloseMessage } = usePanel();
+
   const { mutate: updateMessage, isPending: isUpdatingMessage } =
     useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } =
@@ -82,7 +85,6 @@ export const Message: React.FC<MessageProps> = ({
 
   const handleReaction = (value: string) => {
     toggleReaction({ value, messageId: id });
-    console.log("Emoji Value:", value);
   };
 
   const handleRemove = async () => {
@@ -95,6 +97,10 @@ export const Message: React.FC<MessageProps> = ({
       {
         onSuccess() {
           toast.success("Message deleted successfully");
+
+          if (parentMessageId === id) {
+            onCloseMessage();
+          }
         },
         onError() {
           toast.error("Message deletion failed");
@@ -167,7 +173,7 @@ export const Message: React.FC<MessageProps> = ({
               isAuthor={isAuthor}
               isPending={false}
               handleEdit={() => setEditingId(id)}
-              handleThread={() => {}}
+              handleThread={() => onOpenMessage(id)}
               handleDelete={handleRemove}
               handleReaction={handleReaction}
               hideThreadButton={hideThreadButton}
@@ -241,7 +247,7 @@ export const Message: React.FC<MessageProps> = ({
             isAuthor={isAuthor}
             isPending={false}
             handleEdit={() => setEditingId(id)}
-            handleThread={() => {}}
+            handleThread={() => onOpenMessage(id)}
             handleDelete={handleRemove}
             handleReaction={handleReaction}
             hideThreadButton={hideThreadButton}

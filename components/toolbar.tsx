@@ -39,7 +39,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <Button variant={"ghost"} size={"iconSm"} disabled={isPending}>
             <SquareCheck
               className="size-4"
-              onClick={() => handleReaction("Complete")}
+              onClick={() => handleReaction("✅")}
             />
           </Button>
         </Hint>
@@ -47,16 +47,13 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <Button variant={"ghost"} size={"iconSm"} disabled={isPending}>
             <PiEyesFill
               className="size-4"
-              onClick={() => handleReaction("Taking a look")}
+              onClick={() => handleReaction("👀")}
             />
           </Button>
         </Hint>
         <Hint label="Well done">
           <Button variant={"ghost"} size={"iconSm"} disabled={isPending}>
-            <ThumbsUp
-              className="size-4"
-              onClick={() => handleReaction("Thumbs up")}
-            />
+            <ThumbsUp className="size-4" onClick={() => handleReaction("👍")} />
           </Button>
         </Hint>
 

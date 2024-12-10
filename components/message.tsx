@@ -15,6 +15,7 @@ import { useRemoveMessage } from "@/api/messages/use-remove-message";
 import { useConfirm } from "@/hooks/use-confirm";
 import { Reactions } from "./reactions";
 import { usePanel } from "@/hooks/use-panel";
+import { ThreadBar } from "./thread-bar";
 
 const MessageRenderer = dynamic(() => import("@/components/message-renderer"), {
   ssr: false,
@@ -43,6 +44,7 @@ interface MessageProps {
   hideThreadButton?: boolean;
   threadCount?: number;
   threadImage?: string;
+  threadName?: string;
   threadTimestamp?: number;
 }
 
@@ -66,6 +68,7 @@ export const Message: React.FC<MessageProps> = ({
   hideThreadButton,
   threadCount,
   threadImage,
+  threadName,
   threadTimestamp,
 }) => {
   const avatarFallback = authorName.charAt(0).toUpperCase();
@@ -75,13 +78,17 @@ export const Message: React.FC<MessageProps> = ({
     "Are you sure you wamt to delete this message"
   );
 
-  const { parentMessageId, onOpenMessage, onCloseMessage } = usePanel();
+  const { parentMessageId, onOpenMessage, onOpenMemberProfile, onClose } =
+    usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } =
     useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } =
     useRemoveMessage();
-  const { mutate: toggleReaction } = useToggleReaction();
+  const { mutate: toggleReaction, isPending: isTogglingReaction } =
+    useToggleReaction();
+
+  const isPending = isUpdatingMessage || isTogglingReaction;
 
   const handleReaction = (value: string) => {
     toggleReaction({ value, messageId: id });
@@ -99,7 +106,7 @@ export const Message: React.FC<MessageProps> = ({
           toast.success("Message deleted successfully");
 
           if (parentMessageId === id) {
-            onCloseMessage();
+            onClose();
           }
         },
         onError() {
@@ -139,7 +146,10 @@ export const Message: React.FC<MessageProps> = ({
         >
           <div className="flex items-start gap-2">
             <Hint label={formatFullTime(new Date(createdAt))}>
-              <button className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline">
+              <button
+                className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100
+                w-[40px] leading-[22px] text-center hover:underline"
+              >
                 {format(createdAt, "hh:mm")}
               </button>
             </Hint>
@@ -149,7 +159,7 @@ export const Message: React.FC<MessageProps> = ({
                 <Editor
                   defaultValue={JSON.parse(body)}
                   variant="update"
-                  disabled={isUpdatingMessage}
+                  disabled={isPending}
                   onCancel={() => setEditingId(null)}
                   onSubmit={handleUpdate}
                 />
@@ -164,6 +174,13 @@ export const Message: React.FC<MessageProps> = ({
                   </span>
                 ) : null}
                 <Reactions data={reactions} onChange={handleReaction} />
+                <ThreadBar
+                  count={threadCount}
+                  image={threadImage}
+                  timestamp={threadTimestamp}
+                  name={threadName}
+                  onClick={() => onOpenMessage(id)}
+                />
               </div>
             )}
           </div>
@@ -197,7 +214,7 @@ export const Message: React.FC<MessageProps> = ({
         )}
       >
         <div className="flex items-start gap-2">
-          <button>
+          <button onClick={() => onOpenMemberProfile(memberId)}>
             <Avatar>
               <AvatarImage src={authorImage} />
               <AvatarFallback>{avatarFallback}</AvatarFallback>
@@ -209,7 +226,7 @@ export const Message: React.FC<MessageProps> = ({
               <Editor
                 defaultValue={JSON.parse(body)}
                 variant="update"
-                disabled={isUpdatingMessage}
+                disabled={isPending}
                 onCancel={() => setEditingId(null)}
                 onSubmit={handleUpdate}
               />
@@ -219,7 +236,7 @@ export const Message: React.FC<MessageProps> = ({
               <div className="text-sm">
                 <button
                   className="font-bold text-primary hover:underline"
-                  onClick={() => {}}
+                  onClick={() => onOpenMemberProfile(memberId)}
                 >
                   {authorName}
                 </button>
@@ -238,6 +255,13 @@ export const Message: React.FC<MessageProps> = ({
                 <span className="text-xs text-muted-foreground">(edited)</span>
               ) : null}
               <Reactions data={reactions} onChange={handleReaction} />
+              <ThreadBar
+                count={threadCount}
+                image={threadImage}
+                timestamp={threadTimestamp}
+                name={threadName}
+                onClick={() => onOpenMessage(id)}
+              />
             </div>
           )}
         </div>

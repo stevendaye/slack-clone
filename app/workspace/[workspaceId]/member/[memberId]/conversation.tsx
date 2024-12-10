@@ -6,6 +6,8 @@ import { useGetMember } from "@/api/members/use-get-member";
 import { useGetMessages } from "@/api/messages/use-get-messages";
 import { useMemberId } from "@/hooks/use-member-id";
 import { Header } from "./header";
+import { ChatInput } from "./chat-input";
+import { MessageList } from "@/components/message-list";
 
 interface ConversationProps {
   id: Id<"conversations">;
@@ -20,6 +22,8 @@ export const Conversation: React.FC<ConversationProps> = ({ id }) => {
   const { results, status, loadMore } = useGetMessages({ conversationId: id });
 
   const isLoadingFirstPage = status === "LoadingFirstPage";
+  const isLoadingMore = status === "LoadingMore";
+  const canLoadMore = status === "CanLoadMore";
 
   if (isMemberLoading || isLoadingFirstPage)
     return (
@@ -30,7 +34,26 @@ export const Conversation: React.FC<ConversationProps> = ({ id }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <Header memberName={member?.user.name} memberImage={member?.user.image} onClick={() => {}} />
+      <Header
+        memberName={member?.user.name}
+        memberImage={member?.user.image}
+        onClick={() => {}}
+      />
+
+      <MessageList
+        data={results}
+        variant="conversation"
+        memberName={member?.user.name}
+        memberImage={member?.user.image}
+        loadMore={loadMore}
+        isLoadingMore={isLoadingMore}
+        canLoadMore={canLoadMore}
+      />
+
+      <ChatInput
+        placeholder={`Message ${member?.user.name}`}
+        conversationId={id}
+      />
     </div>
   );
 };

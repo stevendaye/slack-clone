@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Loader, TriangleAlert } from "lucide-react";
@@ -14,25 +15,28 @@ const WorkspacePage = () => {
   const workspaceId = useWorkspaceId();
   const [open, setOpen] = useCreateChannelModal();
 
-  const { data: workspace, isLoading: loadingWorkspace } = useGetWorkspace({
+  const { data: workspace, isLoading: isLoadingWorkspace } = useGetWorkspace({
     id: workspaceId,
   });
-  const { data: channels, isLoading: loadingChannels } = useGetChannels({
+  const { data: channels, isLoading: isLoadingChannels } = useGetChannels({
     workspaceId,
   });
-  const { data: member, isLoading: loadingMember } = useCurrentMember({
+  const { data: currentMember, isLoading: isLoadingMember } = useCurrentMember({
     workspaceId,
   });
 
   const channelId = useMemo(() => channels?.[0]?._id, [channels]);
-  const isAdmin = useMemo(() => member?.role === "admin", [member?.role]);
+  const isAdmin = useMemo(
+    () => currentMember?.role === "admin",
+    [currentMember?.role]
+  );
 
   useEffect(() => {
     if (
-      loadingWorkspace ||
-      loadingChannels ||
-      loadingMember ||
-      !member ||
+      isLoadingWorkspace ||
+      isLoadingChannels ||
+      isLoadingMember ||
+      !currentMember ||
       !workspace
     )
       return;
@@ -44,11 +48,11 @@ const WorkspacePage = () => {
     }
   }, [
     isAdmin,
-    member,
-    loadingMember,
+    currentMember,
+    isLoadingMember,
     channelId,
-    loadingWorkspace,
-    loadingChannels,
+    isLoadingWorkspace,
+    isLoadingChannels,
     workspace,
     open,
     setOpen,
@@ -56,7 +60,7 @@ const WorkspacePage = () => {
     workspaceId,
   ]);
 
-  if (loadingWorkspace || loadingChannels || loadingMember) {
+  if (isLoadingWorkspace || isLoadingChannels || isLoadingMember) {
     return (
       <div className="h-full flex flex-1 items-center justify-center flex-col gap-2">
         <Loader className="size-5 animate-spin text-muted-foreground" />
@@ -64,7 +68,7 @@ const WorkspacePage = () => {
     );
   }
 
-  if (!workspaceId || !member) {
+  if (!workspaceId || !currentMember) {
     return (
       <div className="h-full flex flex-1 items-center justify-center flex-col gap-2">
         <TriangleAlert className="size-5 text-muted-foreground" />

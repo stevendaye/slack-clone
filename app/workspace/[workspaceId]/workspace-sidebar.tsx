@@ -19,10 +19,12 @@ import { WorkspaceSection } from "./workspace-section";
 import { useGetMembers } from "@/api/members/use-get-members";
 import { UserItem } from "./user-item";
 import { useCreateChannelModal } from "@/store/use-create-channel-modal";
+import { useMemberId } from "@/hooks/use-member-id";
 
 export const WorkspaceSidebar: React.FC = () => {
   const workspaceId = useWorkspaceId();
   const channelId = useChannelId();
+  const memberId = useMemberId();
 
   const { data: workspace, isLoading: loadingWorkspace } = useGetWorkspace({
     id: workspaceId,
@@ -101,6 +103,7 @@ export const WorkspaceSidebar: React.FC = () => {
             id={item._id}
             label={item.user.name}
             image={item.user.image}
+            variant={item._id === memberId ? "active" : "default"}
           />
         ))}
       </WorkspaceSection>

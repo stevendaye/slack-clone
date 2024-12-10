@@ -5,7 +5,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { Doc, Id } from "./_generated/dataModel";
 
 /* Load all messages having reply to a particular meesage */
-const populateThreads = async (ctx: QueryCtx, messageId: Id<"messages">) => {
+const populateThread = async (ctx: QueryCtx, messageId: Id<"messages">) => {
   const messages = await ctx.db
     .query("messages")
     .withIndex("by_parent_message_id", (q) =>
@@ -14,8 +14,9 @@ const populateThreads = async (ctx: QueryCtx, messageId: Id<"messages">) => {
     .collect();
 
   if (messages.length === 0)
-    return { count: 0, image: undefined, timestamp: 0 };
+    return { count: 0, image: undefined, timestamp: 0, name: "" };
 
+  // Get the last message in the thread
   const lastMessage = messages[messages.length - 1];
   const lastMessageMember = await populateMember(ctx, lastMessage.memberId);
 
@@ -24,6 +25,7 @@ const populateThreads = async (ctx: QueryCtx, messageId: Id<"messages">) => {
       count: 0,
       image: undefined,
       timestamp: 0,
+      name: "",
     };
 
   const lastMessageUser = await populateUser(ctx, lastMessageMember.userId);
@@ -31,7 +33,8 @@ const populateThreads = async (ctx: QueryCtx, messageId: Id<"messages">) => {
   return {
     count: messages.length,
     image: lastMessageUser?.image,
-    timestamp: lastMessageUser?._creationTime,
+    timestamp: lastMessage?._creationTime,
+    name: lastMessageUser?.name,
   };
 };
 
@@ -237,7 +240,7 @@ export const get = query({
 
       if (!parentMessage) throw new Error("Parent message does not exist");
 
-      _conversationId = args.conversationId;
+      _conversationId = parentMessage.conversationId;
     }
 
     const results = await ctx.db
@@ -246,7 +249,7 @@ export const get = query({
         q
           .eq("channelId", args.channelId)
           .eq("parentMessageId", args.parentMessageId)
-          .eq("conversationId", args.conversationId)
+          .eq("conversationId", _conversationId)
       )
       .order("desc")
       .paginate(args.paginationOpts);
@@ -262,7 +265,7 @@ export const get = query({
             if (!member || !user) return null;
 
             const reactions = await populateReactions(ctx, message._id);
-            const threads = await populateThreads(ctx, message._id);
+            const thread = await populateThread(ctx, message._id);
             const image = message.image
               ? await ctx.storage.getUrl(message.image)
               : undefined;
@@ -304,9 +307,10 @@ export const get = query({
               member,
               user,
               reactions: reactionsWithNoMemberId,
-              threadCount: threads.count,
-              threadImage: threads.image,
-              threadTimestamp: threads.timestamp,
+              threadCount: thread.count,
+              threadImage: thread.image,
+              threadName: thread.name,
+              threadTimestamp: thread.timestamp,
             };
           })
         )

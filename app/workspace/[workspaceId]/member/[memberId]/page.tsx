@@ -19,10 +19,11 @@ const MemberPage = () => {
   const [conversationId, setConversationId] =
     useState<Id<"conversations"> | null>(null);
 
-  const { mutate, isPending } = useCreateOrGetConversation();
+  const { mutate: createOrGetConversation, isPending } =
+    useCreateOrGetConversation();
 
   useEffect(() => {
-    mutate(
+    createOrGetConversation(
       { workspaceId, memberId },
       {
         onSuccess(conversationId) {
@@ -33,7 +34,7 @@ const MemberPage = () => {
         },
       }
     );
-  }, [memberId, workspaceId, mutate]);
+  }, [memberId, workspaceId, createOrGetConversation]);
 
   if (isPending)
     return (

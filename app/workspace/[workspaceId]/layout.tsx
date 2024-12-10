@@ -1,30 +1,30 @@
 "use client";
 
-import React from "react";
-
+import { Loader } from "lucide-react";
+import { Id } from "@/convex/_generated/dataModel";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 
+import { Thread } from "@/components/thread";
+import { Profile } from "@/components/profile";
+
 import { Toolbar } from "./toolbar";
 import { Sidebar } from "./sidebar";
 import { WorkspaceSidebar } from "./workspace-sidebar";
 
 import { usePanel } from "@/hooks/use-panel";
-import { Loader } from "lucide-react";
-import { Id } from "@/convex/_generated/dataModel";
-import { Thread } from "@/components/thread";
 
 interface WorkspaceLayout {
   children: React.ReactNode;
 }
 
 const WorkspaceLayout = ({ children }: WorkspaceLayout) => {
-  const { parentMessageId, onCloseMessage } = usePanel();
+  const { parentMessageId, memberProfileId, onClose } = usePanel();
 
-  const showPanel = !!parentMessageId;
+  const showPanel = !!parentMessageId || !!memberProfileId;
 
   return (
     <div className="h-full">
@@ -49,7 +49,12 @@ const WorkspaceLayout = ({ children }: WorkspaceLayout) => {
                 {parentMessageId ? (
                   <Thread
                     messageId={parentMessageId as Id<"messages">}
-                    onCloseThread={onCloseMessage}
+                    onCloseThread={onClose}
+                  />
+                ) : memberProfileId ? (
+                  <Profile
+                    memberId={memberProfileId as Id<"members">}
+                    onCloseProfile={onClose}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -8,19 +7,25 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useCurrentUser } from "@/components/auth/api/use-current-user";
 import { Loader, LogOut } from "lucide-react";
 import { useAuthActions } from "@convex-dev/auth/react";
 
+import { useCurrentUser } from "@/components/auth/api/use-current-user";
+
 export const UserButton: React.FC = () => {
-  const { data, isLoading } = useCurrentUser();
+  const { data: user, isLoading } = useCurrentUser();
   const { signOut } = useAuthActions();
 
-  if (isLoading)
+  if (isLoading) {
     return <Loader className="size-4 animate-spin text-muted-foreground" />;
-  if (!data) return null;
+  }
 
-  const { image, name } = data;
+  if (!user) {
+    return null;
+  }
+
+  const { image, name } = user;
+
   const avatarFallback = name!.charAt(0).toUpperCase();
 
   return (
@@ -39,7 +44,10 @@ export const UserButton: React.FC = () => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent side="right" align="center" className="w-60">
-        <DropdownMenuItem onClick={() => signOut()} className="h-10">
+        <DropdownMenuItem
+          onClick={() => signOut()}
+          className="h-10 cursor-pointer"
+        >
           <LogOut className="size-4 mr-2" />
           Log out
         </DropdownMenuItem>

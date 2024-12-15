@@ -11,7 +11,7 @@ import {
 import { Thread } from "@/components/thread";
 import { Profile } from "@/components/profile";
 
-import { Toolbar } from "./toolbar";
+import { Searchbar } from "./searchbar";
 import { Sidebar } from "./sidebar";
 import { WorkspaceSidebar } from "./workspace-sidebar";
 
@@ -28,7 +28,8 @@ const WorkspaceLayout = ({ children }: WorkspaceLayout) => {
 
   return (
     <div className="h-full">
-      <Toolbar />
+      <Searchbar />
+
       <div className="flex h-[calc(100vh-2.5rem)]">
         <Sidebar />
 
@@ -40,7 +41,9 @@ const WorkspaceLayout = ({ children }: WorkspaceLayout) => {
             <WorkspaceSidebar />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel minSize={20}>{children}</ResizablePanel>
+          <ResizablePanel minSize={20} defaultSize={75}>
+            {children}
+          </ResizablePanel>
 
           {showPanel && (
             <>

@@ -10,7 +10,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  memberName,
+  memberName = "Member",
   memberImage,
   onClick,
 }) => {
@@ -26,7 +26,9 @@ export const Header: React.FC<HeaderProps> = ({
       >
         <Avatar className="size-6 mr-2">
           <AvatarImage src={memberImage} />
-          <AvatarFallback>{avatarFallback}</AvatarFallback>
+          <AvatarFallback className="w-full h-full object-cover flex justify-center items-center text-white text-xs">
+            {avatarFallback}
+          </AvatarFallback>
         </Avatar>
 
         <span className="truncate">{memberName}</span>

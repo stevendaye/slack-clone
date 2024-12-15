@@ -30,7 +30,7 @@ const MemberPage = () => {
           setConversationId(conversationId);
         },
         onError() {
-          toast.error("Failed to set conversation");
+          toast.error("Failed to create or get conversations");
         },
       }
     );

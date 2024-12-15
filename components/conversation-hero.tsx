@@ -17,10 +17,11 @@ export const ConversationHero: React.FC<ConversationHeroProps> = ({
       <div className="flex items-center gap-x-1 mb-2">
         <Avatar className="size-14 mr-2">
           <AvatarImage src={image} />
-          <AvatarFallback>{avatarFallback}</AvatarFallback>
+          <AvatarFallback className="w-full h-full flex justify-center items-center object-cover bg-sky-500 text-white">
+            {avatarFallback}
+          </AvatarFallback>
         </Avatar>
-
-        <p className="text-2xl font-bold">{name}</p>
+        <p className="text-2xl font-bold"># {name}</p>
       </div>
 
       <p className="font-normal text-slate-800 mb-4">

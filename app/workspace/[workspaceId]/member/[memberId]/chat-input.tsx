@@ -72,8 +72,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       }
 
       createMessage(values, { throwError: true });
+
       setEditorKey((prevKey) => prevKey + 1);
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to send message");
     } finally {
       setIsPending(false);

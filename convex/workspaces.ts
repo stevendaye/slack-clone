@@ -227,16 +227,45 @@ export const remove = mutation({
       throw new Error("You are not a member");
     }
 
-    // Remove all dangling users/members from that workspace
-    const [members] = await Promise.all([
-      ctx.db
-        .query("members")
-        .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
-        .collect(),
-    ]);
+    // Remove all dangling members, channels, converations and messages from this workspace
+    const [members, channels, conversations, messages, reactions] =
+      await Promise.all([
+        ctx.db
+          .query("members")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+        ctx.db
+          .query("channels")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+        ctx.db
+          .query("conversations")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+        ctx.db
+          .query("messages")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+        ctx.db
+          .query("reactions")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+      ]);
 
     for (const member of members) {
       await ctx.db.delete(member._id);
+    }
+    for (const channel of channels) {
+      await ctx.db.delete(channel._id);
+    }
+    for (const conversation of conversations) {
+      await ctx.db.delete(conversation._id);
+    }
+    for (const message of messages) {
+      await ctx.db.delete(message._id);
+    }
+    for (const reaction of reactions) {
+      await ctx.db.delete(reaction._id);
     }
 
     await ctx.db.delete(args.id);

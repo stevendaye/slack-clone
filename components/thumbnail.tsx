@@ -13,17 +13,16 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({ url }) => {
         <div className="relative overflow-hidden max-w-[360px] border rounded-lg cursor-zoom-in">
           <img
             src={url}
-            alt="media"
             className="object-cover rounded-md size-full"
+            alt="chat-media"
           />
         </div>
       </DialogTrigger>
       <DialogContent className="max-w-[900px] border-none bg-transparent p-0 shadow-none">
-        <DialogTitle> Computer Uploaded Image </DialogTitle>
         <img
           src={url}
-          alt="media"
           className="object-cover rounded-md size-full"
+          alt="chat-media"
         />
       </DialogContent>
     </Dialog>

@@ -5,15 +5,19 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useGetMember } from "@/api/members/use-get-member";
 import { useGetMessages } from "@/api/messages/use-get-messages";
 import { useMemberId } from "@/hooks/use-member-id";
+
 import { Header } from "./header";
 import { ChatInput } from "./chat-input";
+
 import { MessageList } from "@/components/message-list";
+import { usePanel } from "@/hooks/use-panel";
 
 interface ConversationProps {
   id: Id<"conversations">;
 }
 
 export const Conversation: React.FC<ConversationProps> = ({ id }) => {
+  const { onOpenMemberProfile } = usePanel();
   const memberId = useMemberId();
 
   const { data: member, isLoading: isMemberLoading } = useGetMember({
@@ -37,7 +41,7 @@ export const Conversation: React.FC<ConversationProps> = ({ id }) => {
       <Header
         memberName={member?.user.name}
         memberImage={member?.user.image}
-        onClick={() => {}}
+        onClick={() => onOpenMemberProfile(memberId)}
       />
 
       <MessageList

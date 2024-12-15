@@ -37,7 +37,7 @@ export const UserButton: React.FC = () => {
             src={image}
             className="w-full h-full object-cover rounded-md"
           />
-          <AvatarFallback className="rounded-md bg-orange-400 text-white">
+          <AvatarFallback className="rounded-md bg-sky-600 text-white">
             {avatarFallback}
           </AvatarFallback>
         </Avatar>

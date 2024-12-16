@@ -2,11 +2,11 @@
 
 import { Loader, TriangleAlert } from "lucide-react";
 
-import { useGetChannel } from "@/api/channels/use-get-channel";
+import { useGetChannel } from "@/apis/channels/use-get-channel";
 import { useChannelId } from "@/hooks/use-channel-id";
 import { Header } from "./header";
 import { ChatInput } from "./chat-input";
-import { useGetMessages } from "@/api/messages/use-get-messages";
+import { useGetMessages } from "@/apis/messages/use-get-messages";
 import { MessageList } from "@/components/message-list";
 
 const ChannelPage = () => {

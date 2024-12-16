@@ -22,10 +22,10 @@ import {
   DropdownMenuRadioGroup,
 } from "./ui/dropdown-menu";
 
-import { useGetMember } from "@/api/members/use-get-member";
-import { useUpdateMember } from "@/api/members/use-update-member";
-import { useRemoveMember } from "@/api/members/use-remove-member";
-import { useCurrentMember } from "@/api/members/use-current-member";
+import { useGetMember } from "@/apis/members/use-get-member";
+import { useUpdateMember } from "@/apis/members/use-update-member";
+import { useRemoveMember } from "@/apis/members/use-remove-member";
+import { useCurrentMember } from "@/apis/members/use-current-member";
 
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { useConfirm } from "@/hooks/use-confirm";
@@ -62,8 +62,7 @@ export const Profile: React.FC<ProfileProps> = ({
     useCurrentMember({ workspaceId });
   const { mutate: updateMember, isPending: isUpdatingMember } =
     useUpdateMember();
-  const { mutate: removeMember, isPending: isRemovingMember } =
-    useRemoveMember();
+  const { mutate: removeMember } = useRemoveMember();
 
   const avatarFallback = member?.user.name?.[0] ?? "M";
 
@@ -117,7 +116,6 @@ export const Profile: React.FC<ProfileProps> = ({
       {
         onSuccess() {
           toast.success("Role changed");
-          onCloseProfile();
         },
         onError() {
           toast.error("Failed to change role");
@@ -188,27 +186,39 @@ export const Profile: React.FC<ProfileProps> = ({
             <div className="flex items-center gap-2 mt-4">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant={"outline"} className="w-full capitalize">
-                    {member.role} <ChevronDownIcon className="size-4 ml-2" />
+                  <Button
+                    variant={"outline"}
+                    className="w-full capitalize flex items-center gap-2"
+                  >
+                    {member.role}
+                    {isUpdatingMember ? (
+                      <Loader className="size-4 animate-spin text-muted-foreground" />
+                    ) : (
+                      <ChevronDownIcon className="size-4 ml-2" />
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent className="w-full">
-                  <DropdownMenuRadioGroup
-                    value={member.role}
-                    onValueChange={(role) =>
-                      onUpdate(role as "admin" | "member")
-                    }
-                  >
-                    <DropdownMenuRadioItem value="admin">
-                      Admin
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="member">
-                      Member
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
+                {!isUpdatingMember ? (
+                  <DropdownMenuContent className="w-full">
+                    <DropdownMenuRadioGroup
+                      value={member.role}
+                      onValueChange={(role) => {
+                        onUpdate(role as "admin" | "member");
+                        document.body.style.pointerEvents = "auto";
+                      }}
+                    >
+                      <DropdownMenuRadioItem value="admin">
+                        Admin
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="member">
+                        Member
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                ) : null}
               </DropdownMenu>
+
               <Button variant={"outline"} className="w-full" onClick={onRemove}>
                 Remove
               </Button>

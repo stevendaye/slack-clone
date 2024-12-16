@@ -19,10 +19,10 @@ import { Input } from "@/components/ui/input";
 
 import { useChannelId } from "@/hooks/use-channel-id";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useUpdateChannel } from "@/api/channels/use-update-channel";
-import { useRemoveChannel } from "@/api/channels/use-remove-channel";
+import { useUpdateChannel } from "@/apis/channels/use-update-channel";
+import { useRemoveChannel } from "@/apis/channels/use-remove-channel";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useCurrentMember } from "@/api/members/use-current-member";
+import { useCurrentMember } from "@/apis/members/use-current-member";
 
 interface HeaderProps {
   title: string;

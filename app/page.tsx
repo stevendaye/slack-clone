@@ -1,13 +1,14 @@
 "use client";
+
 import { useEffect, useMemo } from "react";
+import { Loader } from "lucide-react";
 
 import { UserButton } from "@/components/auth/user-button";
-import { useGetWorkspaces } from "@/api/workspaces/use-get-workspaces";
+import { useGetWorkspaces } from "@/apis/workspaces/use-get-workspaces";
 import { useRouter } from "next/navigation";
 import { useCreateWorkspaceModal } from "@/store/use-create-workspace-modal";
 import Image from "next/image";
-import { useCurrentUser } from "@/components/auth/api/use-current-user";
-
+import { useCurrentUser } from "@/components/auth/apis/use-current-user";
 export default function Home() {
   const { data: user, isLoading: isLoadingUser } = useCurrentUser();
 
@@ -46,10 +47,16 @@ export default function Home() {
         <UserButton />
       </div>
 
-      <h2 className="text-xl font-medium flex gap-x-4 text-center">
-        We are now preparing your workspace. We will be redirecting you shortly
-        to things that matter
-      </h2>
+      {!isLoadingUser && (
+        <div className="flex flex-col justify-center items-center max-w-lg gap-2">
+          <p className="text-lg font-medium text-center">
+            We are now preparing your workspace. We will be redirecting you
+            shortly to things that matter.
+          </p>
+
+          <Loader className="size-7 animate-spin text-muted-foreground" />
+        </div>
+      )}
     </div>
   );
 }

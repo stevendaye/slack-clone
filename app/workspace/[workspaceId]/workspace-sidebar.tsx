@@ -8,15 +8,15 @@ import {
 import React from "react";
 
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useCurrentMember } from "@/api/members/use-current-member";
-import { useGetWorkspace } from "@/api/workspaces/use-get-workspace";
+import { useCurrentMember } from "@/apis/members/use-current-member";
+import { useGetWorkspace } from "@/apis/workspaces/use-get-workspace";
 import { useChannelId } from "@/hooks/use-channel-id";
 
 import { WorkspaceHeader } from "./workspace-header";
 import { SidebarItem } from "./sidebar-item";
-import { useGetChannels } from "@/api/channels/use-get-channels";
+import { useGetChannels } from "@/apis/channels/use-get-channels";
 import { WorkspaceSection } from "./workspace-section";
-import { useGetMembers } from "@/api/members/use-get-members";
+import { useGetMembers } from "@/apis/members/use-get-members";
 import { UserItem } from "./user-item";
 import { useCreateChannelModal } from "@/store/use-create-channel-modal";
 import { useMemberId } from "@/hooks/use-member-id";

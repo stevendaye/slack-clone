@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -8,16 +7,15 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 
 import { Info, Search } from "lucide-react";
 
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useGetWorkspace } from "@/api/workspaces/use-get-workspace";
-import { useGetChannels } from "@/api/channels/use-get-channels";
-import { useGetMembers } from "@/api/members/use-get-members";
+import { useGetWorkspace } from "@/apis/workspaces/use-get-workspace";
+import { useGetChannels } from "@/apis/channels/use-get-channels";
+import { useGetMembers } from "@/apis/members/use-get-members";
 import Link from "next/link";
 
 export const Searchbar: React.FC = () => {

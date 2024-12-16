@@ -4,11 +4,11 @@ import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Loader, TriangleAlert } from "lucide-react";
 
-import { useGetChannels } from "@/api/channels/use-get-channels";
-import { useGetWorkspace } from "@/api/workspaces/use-get-workspace";
+import { useGetChannels } from "@/apis/channels/use-get-channels";
+import { useGetWorkspace } from "@/apis/workspaces/use-get-workspace";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { useCreateChannelModal } from "@/store/use-create-channel-modal";
-import { useCurrentMember } from "@/api/members/use-current-member";
+import { useCurrentMember } from "@/apis/members/use-current-member";
 
 const WorkspacePage = () => {
   const router = useRouter();

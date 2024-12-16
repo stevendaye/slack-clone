@@ -10,8 +10,8 @@ import {
 import { Loader, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useGetWorkspace } from "@/api/workspaces/use-get-workspace";
-import { useGetWorkspaces } from "@/api/workspaces/use-get-workspaces";
+import { useGetWorkspace } from "@/apis/workspaces/use-get-workspace";
+import { useGetWorkspaces } from "@/apis/workspaces/use-get-workspaces";
 import { useCreateWorkspaceModal } from "@/store/use-create-workspace-modal";
 import { useRouter } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";

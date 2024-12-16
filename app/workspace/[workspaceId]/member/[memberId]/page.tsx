@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { toast } from "sonner";
 
-import { useCreateOrGetConversation } from "@/api/conversations/user-create-or-get-conversation";
+import { useCreateOrGetConversation } from "@/apis/conversations/user-create-or-get-conversation";
 import { useMemberId } from "@/hooks/use-member-id";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { AlertTriangle, Loader } from "lucide-react";

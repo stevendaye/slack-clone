@@ -8,9 +8,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { toast } from "sonner";
 import { Thumbnail } from "./thumbnail";
 import { Toolbar } from "./toolbar";
-import { useUpdateMessage } from "@/api/messages/use-update-message";
-import { useToggleReaction } from "@/api/reactions/user-toggle-reaction";
-import { useRemoveMessage } from "@/api/messages/use-remove-message";
+import { useUpdateMessage } from "@/apis/messages/use-update-message";
+import { useToggleReaction } from "@/apis/reactions/user-toggle-reaction";
+import { useRemoveMessage } from "@/apis/messages/use-remove-message";
 
 import { useConfirm } from "@/hooks/use-confirm";
 import { Reactions } from "./reactions";

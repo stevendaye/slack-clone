@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { CheckIcon, CopyIcon, RefreshCcw } from "lucide-react";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useNewJoinCode } from "@/api/workspaces/use-new-join-code";
+import { useNewJoinCode } from "@/apis/workspaces/use-new-join-code";
 import { useConfirm } from "@/hooks/use-confirm";
 
 interface InviteModalProps {

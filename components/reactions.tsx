@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 
-import { useCurrentMember } from "@/api/members/use-current-member";
+import { useCurrentMember } from "@/apis/members/use-current-member";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { Hint } from "./hint";
 import { EmojiPopover } from "./emoji-popover";

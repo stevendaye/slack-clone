@@ -11,11 +11,11 @@ import { AlertTriangle, Loader, XIcon } from "lucide-react";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { useChannelId } from "@/hooks/use-channel-id";
 
-import { useGetMessage } from "@/api/messages/use-get-message";
-import { useCurrentMember } from "@/api/members/use-current-member";
-import { useCreateMessage } from "@/api/messages/use-create-message";
-import { useCreateUploadURL } from "@/api/upload/use-create-upload-url";
-import { useGetMessages } from "@/api/messages/use-get-messages";
+import { useGetMessage } from "@/apis/messages/use-get-message";
+import { useCurrentMember } from "@/apis/members/use-current-member";
+import { useCreateMessage } from "@/apis/messages/use-create-message";
+import { useCreateUploadURL } from "@/apis/upload/use-create-upload-url";
+import { useGetMessages } from "@/apis/messages/use-get-messages";
 
 import { Button } from "./ui/button";
 import { Message } from "./message";

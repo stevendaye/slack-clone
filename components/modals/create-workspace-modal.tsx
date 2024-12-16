@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useCreateWorkspace } from "@/api/workspaces/use-create-workspace";
+import { useCreateWorkspace } from "@/apis/workspaces/use-create-workspace";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCreateWorkspaceModal } from "@/store/use-create-workspace-modal";

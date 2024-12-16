@@ -4,8 +4,8 @@ import { differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 import { Loader } from "lucide-react";
 
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useCurrentMember } from "@/api/members/use-current-member";
-import { GetMessagesReturnType } from "@/api/messages/use-get-messages";
+import { useCurrentMember } from "@/apis/members/use-current-member";
+import { GetMessagesReturnType } from "@/apis/messages/use-get-messages";
 
 import { Message } from "./message";
 import { ChannelHero } from "./channel-hero";

@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Quill from "quill";
-import { useCreateMessage } from "@/api/messages/use-create-message";
+import { useCreateMessage } from "@/apis/messages/use-create-message";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { toast } from "sonner";
-import { useCreateUploadURL } from "@/api/upload/use-create-upload-url";
+import { useCreateUploadURL } from "@/apis/upload/use-create-upload-url";
 import { Id } from "@/convex/_generated/dataModel";
 
 // Dynamically import Quill Editor as it does not support server side render

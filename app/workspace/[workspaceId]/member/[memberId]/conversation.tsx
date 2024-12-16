@@ -2,8 +2,8 @@ import { Loader } from "lucide-react";
 
 import { Id } from "@/convex/_generated/dataModel";
 
-import { useGetMember } from "@/api/members/use-get-member";
-import { useGetMessages } from "@/api/messages/use-get-messages";
+import { useGetMember } from "@/apis/members/use-get-member";
+import { useGetMessages } from "@/apis/messages/use-get-messages";
 import { useMemberId } from "@/hooks/use-member-id";
 
 import { Header } from "./header";

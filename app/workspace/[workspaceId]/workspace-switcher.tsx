@@ -38,7 +38,7 @@ export const WorkspaceSwitcher: React.FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="size-9 relative overflow-hidden bg-[#ABABAD] hover:bg-[#ABABAD]/80 text-slate-800 font-semibold text-xl">
+        <Button className="size-9 relative overflow-hidden bg-white hover:bg-[whitesmoke] text-black font-semibold text-xl">
           {loadingWorkspace ? (
             <Loader className="size-4 animate-spin shrink-0" />
           ) : (
@@ -66,7 +66,7 @@ export const WorkspaceSwitcher: React.FC = () => {
           >
             <div
               className={`shrink-0 size-9 relative overflow-hidden bg-[#616061] text-white font-semibold text-lg
-                rounded-md flex items-center justify-center mr-2`}
+              rounded-md flex items-center justify-center mr-2`}
             >
               {workspace.name.charAt(0).toUpperCase()}
             </div>
@@ -76,11 +76,14 @@ export const WorkspaceSwitcher: React.FC = () => {
 
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            document.body.style.pointerEvents = "auto";
+          }}
         >
           <div
             className={`size-9 relative overflow-hidden bg-[#F2F2F2] text-slate-800 font-semibold text-lg
-          rounded-md flex items-center justify-center mr-2`}
+            rounded-md flex items-center justify-center mr-2`}
           >
             <Plus className="size-4" />
           </div>

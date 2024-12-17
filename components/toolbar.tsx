@@ -4,11 +4,8 @@ import {
   MessageSquareTextIcon,
   Pencil,
   SmilePlus,
-  SquareCheck,
-  ThumbsUp,
   Trash,
 } from "lucide-react";
-import { PiEyesFill } from "react-icons/pi";
 import { Button } from "./ui/button";
 import { Hint } from "./hint";
 import { EmojiPopover } from "./emoji-popover";
@@ -36,24 +33,39 @@ export const Toolbar: React.FC<ToolbarProps> = ({
     <div className="absolute top-0 right-4">
       <div className="opacity-0 group-hover:opacity-100 transition-opacity border bg-white rounded-md shadow-sm">
         <Hint label="Complete">
-          <Button variant={"ghost"} size={"iconSm"} disabled={isPending}>
-            <SquareCheck
-              className="size-4"
-              onClick={() => handleReaction("✅")}
-            />
+          <Button
+            asChild
+            variant={"ghost"}
+            size={"iconSm"}
+            disabled={isPending}
+            onClick={() => handleReaction("✅")}
+            className="hover:cursor-pointer"
+          >
+            <span className="size-4">✅</span>
           </Button>
         </Hint>
         <Hint label="Taking a look">
-          <Button variant={"ghost"} size={"iconSm"} disabled={isPending}>
-            <PiEyesFill
-              className="size-4"
-              onClick={() => handleReaction("👀")}
-            />
+          <Button
+            asChild
+            variant={"ghost"}
+            size={"iconSm"}
+            disabled={isPending}
+            onClick={() => handleReaction("👀")}
+            className="hover:cursor-pointer"
+          >
+            <span className="size-4">👀</span>
           </Button>
         </Hint>
         <Hint label="Well done">
-          <Button variant={"ghost"} size={"iconSm"} disabled={isPending}>
-            <ThumbsUp className="size-4" onClick={() => handleReaction("👍")} />
+          <Button
+            asChild
+            variant={"ghost"}
+            size={"iconSm"}
+            disabled={isPending}
+            onClick={() => handleReaction("👍")}
+            className="hover:cursor-pointer"
+          >
+            <span className="size-4">👍</span>
           </Button>
         </Hint>
 

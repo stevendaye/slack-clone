@@ -75,7 +75,10 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="cursor-pointer py-2"
-                  onClick={() => setOpenInvite(true)}
+                  onClick={() => {
+                    setOpenInvite(true);
+                    document.body.style.pointerEvents = "auto";
+                  }}
                 >
                   Invite people to {workspace.name}
                 </DropdownMenuItem>
@@ -83,7 +86,10 @@ export const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="cursor-pointer py-2"
-                  onClick={() => setOpenPreferences(true)}
+                  onClick={() => {
+                    setOpenPreferences(true);
+                    document.body.style.pointerEvents = "auto";
+                  }}
                 >
                   Preference
                 </DropdownMenuItem>

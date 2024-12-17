@@ -35,7 +35,10 @@ export const Searchbar: React.FC = () => {
         <Button
           size={"sm"}
           className="bg-accent/25 hover:bg-accent-25 w-full justify-start h-7 px-2"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            document.body.style.pointerEvents = "auto";
+          }}
         >
           <Search className="size-4 text-white mr-2" />
           <span className="text-white text-xs">Search {data?.name}</span>
@@ -51,6 +54,7 @@ export const Searchbar: React.FC = () => {
                 <CommandItem
                   asChild
                   key={channel._id}
+                  className="hover:cursor-pointer"
                   onSelect={() => setOpen(false)}
                 >
                   <Link
@@ -67,6 +71,7 @@ export const Searchbar: React.FC = () => {
                 <CommandItem
                   asChild
                   key={member._id}
+                  className="hover:cursor-pointer"
                   onSelect={() => setOpen(false)}
                 >
                   <Link href={`/workspace/${workspaceId}/member/${member._id}`}>

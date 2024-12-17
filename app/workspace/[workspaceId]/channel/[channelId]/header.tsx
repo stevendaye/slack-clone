@@ -51,6 +51,8 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
     useRemoveChannel();
 
   const handleEditOpen = () => {
+    document.body.style.pointerEvents = "auto";
+
     if (member?.role !== "admin") return;
 
     setEditOpen(true);

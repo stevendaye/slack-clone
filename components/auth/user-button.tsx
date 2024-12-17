@@ -33,7 +33,11 @@ export const UserButton: React.FC = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/auth");
+
+    /* Due to a bug in Convex Auth in the recent version,
+     * here is a hacky way to successfully log out the user
+     */
+    location.reload();
   };
 
   return (

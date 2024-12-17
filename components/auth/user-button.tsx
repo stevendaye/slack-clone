@@ -11,13 +11,10 @@ import { Loader, LogOut } from "lucide-react";
 import { useAuthActions } from "@convex-dev/auth/react";
 
 import { useCurrentUser } from "@/components/auth/apis/use-current-user";
-import { useRouter } from "next/navigation";
 
 export const UserButton: React.FC = () => {
   const { data: user, isLoading } = useCurrentUser();
   const { signOut } = useAuthActions();
-
-  const router = useRouter();
 
   if (isLoading) {
     return <Loader className="size-4 animate-spin text-muted-foreground" />;

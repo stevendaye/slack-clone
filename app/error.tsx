@@ -11,7 +11,7 @@ const ErrorPage = () => {
 
       <h2 className="max-w-2xl text-sm md:text-lg font-normal text-center px-4">
         Sorry, we had some technical problems during your last last operation.
-        Please go back to the home page and let's start over.
+        Please go back to the home page and let&apos;s start over.
       </h2>
       <Button asChild>
         <Link href={"/"}>Go back</Link>
